@@ -1,0 +1,43 @@
+.header {
+  background-color: #452B1E;
+  padding: 10px 0;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.nav-link.active {
+  text-decoration: underline;
+}
+.header {
+  background-color: #4b2e2e;
+  padding: 16px;
+  color: white;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
