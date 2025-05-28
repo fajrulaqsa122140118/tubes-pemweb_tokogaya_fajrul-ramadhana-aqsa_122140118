@@ -147,3 +147,40 @@
 .btn-cart:hover {
   background-color: #eab308;
 }
+
+.promo-message-box {
+  background-color: #fff8e6;
+  border: 1px solid #fcd34d;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.promo-message-title {
+  color: #b45309;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.promo-message-text {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.promo-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #b91c1c;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.promo-button:hover {
+  background-color: #9a1818;
+}

@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Checkout from './pages/Checkout';
 import NotFound from './pages/NotFound';
@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import FilterPage from './pages/FilterPage';
 import Cart from "./pages/Cart";
+import RegisterPage from './pages/RegisterPage';
 
 
 
@@ -22,15 +23,21 @@ function App() {
       {!hideHeaderPaths.includes(location.pathname.toLowerCase()) && <Header />}
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/promo" element={<Promo />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route
+          path="/"
+          element={
+            localStorage.getItem("user") ? <Home /> : <Navigate to="/login" replace />
+          }
+        />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/promo" element={<Promo />} />
         <Route path="/filter" element={<FilterPage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

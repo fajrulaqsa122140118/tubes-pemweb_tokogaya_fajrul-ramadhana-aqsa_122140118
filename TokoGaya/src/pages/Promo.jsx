@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext'; // ✅ akses context keranjang
 import './Promo.css';
 
 const getRandomDiscount = () => {
@@ -9,7 +9,7 @@ const getRandomDiscount = () => {
 
 const Promo = () => {
   const [products, setProducts] = useState([]);
-  const navigate = useNavigate();
+  const { addToCart } = useCart(); // ✅ Pindah ke dalam komponen
 
   useEffect(() => {
     fetch('https://fakestoreapi.com/products')
@@ -17,8 +17,15 @@ const Promo = () => {
       .then(data => {
         const discounted = data.map(product => {
           const discount = getRandomDiscount();
-          const discountedPrice = (product.price * (1 - discount / 100)).toFixed(2);
-          return { ...product, discount, discountedPrice };
+          const originalPriceIDR = product.price * 16000;
+          const discountedPrice = originalPriceIDR * (1 - discount / 100);
+
+          return {
+            ...product,
+            discount,
+            originalPriceIDR,
+            discountedPrice
+          };
         });
         setProducts(discounted);
       });
@@ -32,9 +39,21 @@ const Promo = () => {
           <div className="promo-card" key={product.id}>
             <img src={product.image} alt={product.title} />
             <h3>{product.title}</h3>
-            <p className="original-price">Rp {product.price.toFixed(2)}</p>
+
+            <p className="original-price">
+              <s>Rp {product.originalPriceIDR.toLocaleString('id-ID')}</s>
+            </p>
+
             <p className="discount">Diskon {product.discount}%</p>
-            <p className="final-price">💸 Rp {product.discountedPrice}</p>
+
+            <p className="final-price">💸 Rp {product.discountedPrice.toLocaleString('id-ID')}</p>
+
+            <button
+              onClick={() => addToCart(product)}
+              className="btn-cart"
+            >
+              Tambah ke Keranjang
+            </button>
           </div>
         ))}
       </div>

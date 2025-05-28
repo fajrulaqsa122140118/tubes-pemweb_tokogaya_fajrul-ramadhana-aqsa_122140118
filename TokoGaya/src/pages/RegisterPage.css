@@ -1,0 +1,63 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: #f3f4f6;
+  padding: 40px 0;
+}
+
+.register-box {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 480px;
+}
+
+.register-box h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 24px;
+}
+
+.register-box label {
+  display: block;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.register-box input,
+.register-box select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.gender-options {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-group {
+  margin-top: 10px;
+}
+
+.register-button {
+  background-color: black;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  margin-top: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.register-button:hover {
+  background-color: #333;
+}

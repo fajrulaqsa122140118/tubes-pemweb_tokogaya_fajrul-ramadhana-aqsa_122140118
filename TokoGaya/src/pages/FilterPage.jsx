@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './FilterPage.css';
+import { useCart } from '../context/CartContext';
 
 export default function FilterPage() {
   const [products, setProducts] = useState([]);
@@ -8,6 +10,8 @@ export default function FilterPage() {
     minPrice: '',
     maxPrice: ''
   });
+
+  const { addToCart } = useCart(); // ✅ akses keranjang
 
   useEffect(() => {
     axios.get('https://fakestoreapi.com/products')
@@ -22,36 +26,33 @@ export default function FilterPage() {
     });
   };
 
-  // Perbaikan: validasi angka dan gunakan parseFloat dengan isNaN
   const filteredProducts = products.filter((product) => {
-    const matchCategory =
-      filters.category === '' || product.category === filters.category;
-
     const priceIDR = product.price * 16000;
 
-    const min = parseFloat(filters.minPrice);
-    const max = parseFloat(filters.maxPrice);
+    // Validasi & konversi input harga
+    const minInput = parseFloat(filters.minPrice);
+    const maxInput = parseFloat(filters.maxPrice);
 
-    const matchMin = isNaN(min) || priceIDR >= min;
-    const matchMax = isNaN(max) || priceIDR <= max;
+    const min = isNaN(minInput) || minInput < 100 ? 0 : minInput * 1000;
+    const max = isNaN(maxInput) || maxInput < 100 ? Infinity : maxInput * 1000;
+
+    const matchCategory =
+      filters.category === '' || product.category === filters.category;
+    const matchMin = priceIDR >= min;
+    const matchMax = priceIDR <= max;
 
     return matchCategory && matchMin && matchMax;
   });
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">🔍 Filter Produk</h2>
+    <div className="filter-container">
+      <h2 className="filter-title">🔍 Filter Produk</h2>
 
-      {/* Filter Form */}
-      <div className="flex flex-wrap gap-4 items-center bg-white shadow p-4 rounded-md mb-8">
-        <select
-          name="category"
-          onChange={handleChange}
-          className="p-2 border rounded w-60"
-        >
+      <div className="filter-box">
+        <select name="category" onChange={handleChange}>
           <option value="">Semua Kategori</option>
-          <option value="men's clothing">Men's Clothing</option>
-          <option value="women's clothing">Women's Clothing</option>
+          <option value="women's clothing">Women&#39;s Clothing</option>
+          <option value="men's clothing">Men&#39;s Clothing</option>
           <option value="jewelery">Jewelery</option>
           <option value="electronics">Electronics</option>
         </select>
@@ -59,40 +60,35 @@ export default function FilterPage() {
         <input
           type="number"
           name="minPrice"
-          placeholder="Harga Minimum"
-          className="p-2 border rounded w-48"
+          placeholder="Harga Minimum (ribu)"
+          min="100"
           onChange={handleChange}
         />
         <input
           type="number"
           name="maxPrice"
-          placeholder="Harga Maksimum"
-          className="p-2 border rounded w-48"
+          placeholder="Harga Maksimum (ribu)"
+          min="100"
           onChange={handleChange}
         />
       </div>
 
-      {/* Daftar Produk */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="product-grid">
         {filteredProducts.map((product) => {
           const priceIDR = product.price * 16000;
 
           return (
-            <div
-              key={product.id}
-              className="bg-white p-4 shadow-md rounded-xl w-full"
-            >
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-48 object-contain mb-4"
-              />
-              <h3 className="font-bold text-sm mb-2">{product.title}</h3>
-              <p className="text-gray-600 text-sm mb-1">{product.category}</p>
-              <p className="text-red-500 font-bold mb-3">
-                Rp {priceIDR.toLocaleString()}
-              </p>
-              <button className="w-full px-4 py-2 bg-yellow-400 text-white font-semibold rounded hover:bg-yellow-500 text-sm">
+            <div className="product-card" key={product.id}>
+              <div className="img-container">
+                <img src={product.image} alt={product.title} />
+              </div>
+              <h3>{product.title}</h3>
+              <span className="product-category">{product.category}</span>
+              <p className="product-price">Rp {priceIDR.toLocaleString('id-ID')}</p>
+              <button
+                className="btn-cart"
+                onClick={() => addToCart(product)}
+              >
                 Beli
               </button>
             </div>

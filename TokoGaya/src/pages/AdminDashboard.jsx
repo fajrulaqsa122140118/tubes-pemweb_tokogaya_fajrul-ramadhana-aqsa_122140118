@@ -9,7 +9,7 @@ export default function AdminDashboard() {
     if (!user || user.role !== 'admin') {
       navigate('/login');
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="text-center mt-10">

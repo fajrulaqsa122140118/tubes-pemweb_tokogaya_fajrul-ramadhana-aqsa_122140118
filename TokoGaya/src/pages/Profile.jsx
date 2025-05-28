@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Profile.css"; // tambahkan CSS ini
 
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Form input sementara
   const [formData, setFormData] = useState({
     name: "",
     address: "",
-    joined: ""
   });
 
   useEffect(() => {
@@ -23,10 +22,9 @@ const Profile = () => {
       setFormData({
         name: parsedUser.name || "",
         address: parsedUser.address || "",
-        joined: parsedUser.joined || ""
       });
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -43,6 +41,10 @@ const Profile = () => {
   };
 
   const handleSave = () => {
+    if (!user.email.includes('@gmail.com')) {
+      alert("Email harus menggunakan @gmail.com");
+      return;
+    }
     const updatedUser = { ...user, ...formData };
     localStorage.setItem("user", JSON.stringify(updatedUser));
     setUser(updatedUser);
@@ -52,86 +54,53 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="profile-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '70vh' }}>
-      <h2 style={{ marginBottom: '20px' }}>👤 Profil Pengguna</h2>
-      <div className="profile-card" style={{
-        backgroundColor: 'white',
-        padding: '20px 30px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        minWidth: '300px',
-        textAlign: 'left'
-      }}>
-        <p><strong>Nama:</strong>
-          {isEditing ? (
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              style={{ marginLeft: 10 }}
-            />
-          ) : (
-            <span> {user.name}</span>
-          )}
-        </p>
+    <div className="profile-container">
+      <h2 className="profile-title">👤 Profil Pengguna</h2>
+
+      <div className="profile-card">
+        <p><strong>Nama:</strong> {isEditing ? (
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
+        ) : (
+          <span> {user.name}</span>
+        )}</p>
 
         <p><strong>Email:</strong> {user.email}</p>
 
-        <p><strong>Alamat:</strong>
-          {isEditing ? (
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              style={{ marginLeft: 10 }}
-            />
-          ) : (
-            <span> {user.address}</span>
-          )}
-        </p>
+        <p><strong>Alamat:</strong> {isEditing ? (
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+        ) : (
+          <span> {user.address}</span>
+        )}</p>
 
-        <p><strong>Bergabung Sejak:</strong>
-          {isEditing ? (
-            <input
-              type="text"
-              name="joined"
-              value={formData.joined}
-              onChange={handleInputChange}
-              style={{ marginLeft: 10 }}
-            />
-          ) : (
-            <span> {user.joined}</span>
-          )}
-        </p>
+        <p><strong>Bergabung Sejak:</strong> {user.joined}</p>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div className="profile-actions">
         {!isEditing ? (
-          <button onClick={handleEditToggle} style={buttonStyle}>
+          <button className="btn-edit" onClick={handleEditToggle}>
             Edit Profil
           </button>
         ) : (
-          <button onClick={handleSave} style={buttonStyle}>
+          <button className="btn-save" onClick={handleSave}>
             Simpan
           </button>
         )}
-        <button onClick={handleLogout} style={{ ...buttonStyle, marginLeft: 10, backgroundColor: '#ef4444' }}>
+        <button className="btn-logout" onClick={handleLogout}>
           Logout
         </button>
       </div>
     </div>
   );
-};
-
-const buttonStyle = {
-  padding: '10px 20px',
-  backgroundColor: '#3b82f6',
-  color: 'white',
-  border: 'none',
-  borderRadius: '8px',
-  cursor: 'pointer'
 };
 
 export default Profile;

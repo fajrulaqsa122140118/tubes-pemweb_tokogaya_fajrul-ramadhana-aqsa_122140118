@@ -41,3 +41,20 @@
 .nav-link:hover {
   text-decoration: underline;
 }
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+  padding: 6px 12px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.nav-link.active {
+  text-decoration: underline;
+  font-weight: bold;
+}
