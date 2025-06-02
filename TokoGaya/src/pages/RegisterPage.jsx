@@ -5,85 +5,98 @@ import './RegisterPage.css';
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
-    gender: '',
-    firstName: '',
-    birthDay: '1',
-    birthMonth: 'Januari',
-    birthYear: '2000',
-    stayLoggedIn: false,
-    subscribe: false,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-    const handleSubmit = () => {
-        const today = new Date().toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+  const handleSubmit = async () => {
+    // Validasi dasar
+    if (!formData.username || !formData.email || !formData.password) {
+      alert("Harap isi semua field!");
+      return;
+    }
 
-        const newUser = {
-            ...formData,
-            birthDate: `${formData.birthDay} ${formData.birthMonth} ${formData.birthYear}`,
-            joined: today
-        };
+    if (!formData.email.endsWith("@gmail.com")) {
+      alert("Email harus menggunakan @gmail.com");
+      return;
+    }
 
-    localStorage.setItem('user', JSON.stringify(newUser));
-    navigate('/profile');
-    };
+    try {
+      const response = await fetch("http://127.0.0.1:6543/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("✅ Registrasi berhasil!");
+
+        localStorage.setItem('user', JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          joined: new Date().toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          })
+        }));
+
+        navigate("/login");
+      } else {
+        alert(`❌ ${result.message || 'Terjadi kesalahan saat registrasi'}`);
+      }
+    } catch (error) {
+      alert("❌ Gagal terhubung ke server.");
+      console.error(error);
+    }
+  };
 
   return (
     <div className="register-container">
       <div className="register-box">
         <h2>Daftar Akun Baru</h2>
 
+        <label>Username</label>
+        <input
+          type="text"
+          name="username"
+          placeholder="Masukkan username"
+          onChange={handleChange}
+        />
+
         <label>Alamat Email</label>
-        <input type="email" name="email" onChange={handleChange} />
+        <input
+          type="email"
+          name="email"
+          placeholder="contoh@gmail.com"
+          onChange={handleChange}
+        />
 
         <label>Password</label>
-        <input type="password" name="password" onChange={handleChange} />
+        <input
+          type="password"
+          name="password"
+          placeholder="Masukkan password"
+          onChange={handleChange}
+        />
 
-        <label>Gender</label>
-        <div className="gender-options">
-          <label><input type="radio" name="gender" value="wanita" onChange={handleChange} /> Wanita</label>
-          <label><input type="radio" name="gender" value="pria" onChange={handleChange} /> Pria</label>
-        </div>
-
-        <label>Nama Depan</label>
-        <input type="text" name="firstName" onChange={handleChange} />
-
-        <label>Tanggal Lahir</label>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <select name="birthDay" onChange={handleChange}>
-            {Array.from({ length: 31 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-          </select>
-          <select name="birthMonth" onChange={handleChange}>
-            {['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'].map((m) => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </select>
-          <select name="birthYear" onChange={handleChange}>
-            {Array.from({ length: 60 }, (_, i) => (
-              <option key={1965 + i} value={1965 + i}>{1965 + i}</option>
-            ))}
-          </select>
-        </div>
-
-            
-        <button className="register-button" onClick={handleSubmit}>KONFIRMASI DAN LANJUTKAN</button>
+        <button className="register-button" onClick={handleSubmit}>
+          KONFIRMASI DAN LANJUTKAN
+        </button>
       </div>
     </div>
   );
 }
-

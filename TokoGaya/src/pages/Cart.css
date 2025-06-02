@@ -128,3 +128,17 @@
 .btn-confirm:hover {
   background-color: #1d4ed8;
 }
+.qty-btn {
+  padding: 4px 10px;
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.quantity-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}

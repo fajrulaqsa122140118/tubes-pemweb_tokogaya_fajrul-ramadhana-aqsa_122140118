@@ -1,35 +1,64 @@
 import { useCart } from "../context/CartContext";
-import { useState } from "react";
-import './Cart.css'; // pastikan Anda memiliki file ini
+import { useNavigate } from "react-router-dom";
+import './Cart.css';
 
 export default function Cart() {
-  const { cart, removeFromCart } = useCart();
-  const [showForm, setShowForm] = useState(false);
-  const [address, setAddress] = useState("");
-  const [payment, setPayment] = useState("");
-
+  const {
+    cart,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity
+  } = useCart();
+  const navigate = useNavigate();
+  
   const total = cart.reduce(
     (sum, item) => sum + item.price * 16000 * item.quantity,
     0
   );
 
-  const handleConfirm = () => {
-    if (!address || !payment) {
-      alert("⚠️ Harap isi alamat dan metode pembayaran.");
-      return;
-    }
+  const handleCheckout = async () => {
+    const payload = cart.map(item => ({
+      name: item.title,
+      quantity: item.quantity,
+      category: item.category,
+      total: item.price * 16000 * item.quantity
+    }));
 
-    alert(
-      `✅ Terima kasih!\nAlamat: ${address}\nMetode: ${payment}\nTotal: Rp ${total.toLocaleString('id-ID')}`
-    );
-    localStorage.removeItem("cart");
-    window.location.reload();
+    console.log('Payload yang dikirim:', payload); // Debug log
+
+    try {
+      const response = await fetch("http://localhost:6543/api/orderss", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      console.log('Response status:', response.status); // Debug log
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || errorData.error || "Gagal menyimpan pesanan");
+      }
+
+      const result = await response.json();
+      console.log('Response data:', result); // Debug log
+      
+      alert("✅ " + result.message);
+      localStorage.removeItem("cart");
+      navigate("/thankyou");
+      
+    } catch (error) {
+      alert("❌ Checkout gagal: " + error.message);
+      console.error('Checkout error:', error);
+    }
   };
 
   return (
     <div className="cart-container">
       <h2 className="cart-title">🛒 Keranjang Belanja</h2>
-
       {cart.length === 0 ? (
         <p className="empty-cart">Keranjang kamu kosong.</p>
       ) : (
@@ -39,7 +68,12 @@ export default function Cart() {
               <div className="cart-card" key={item.id}>
                 <h3>{item.title}</h3>
                 <p className="category">{item.category}</p>
-                <p>Jumlah: <strong>{item.quantity}</strong></p>
+                <div className="quantity-box">
+                  <span>Jumlah:</span>
+                  <button onClick={() => decreaseQuantity(item.id)} className="qty-btn">-</button>
+                  <strong>{item.quantity}</strong>
+                  <button onClick={() => increaseQuantity(item.id)} className="qty-btn">+</button>
+                </div>
                 <p className="price">
                   Subtotal: Rp {(item.price * 16000 * item.quantity).toLocaleString('id-ID')}
                 </p>
@@ -49,45 +83,13 @@ export default function Cart() {
               </div>
             ))}
           </div>
-
           <div className="checkout-box">
             <p className="total">
               <strong>Total: Rp {total.toLocaleString('id-ID')}</strong>
             </p>
-
-            {!showForm ? (
-              <button className="btn-checkout" onClick={() => setShowForm(true)}>
-                Checkout Sekarang
-              </button>
-            ) : (
-              <div className="form-box">
-                <h4>Konfirmasi Pesanan</h4>
-
-                <label>Alamat Pengantaran:</label>
-                <textarea
-                  rows="2"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  required
-                ></textarea>
-
-                <label>Metode Pembayaran:</label>
-                <select
-                  value={payment}
-                  onChange={(e) => setPayment(e.target.value)}
-                  required
-                >
-                  <option value="">Pilih metode</option>
-                  <option value="Transfer Bank">Transfer Bank</option>
-                  <option value="COD">Bayar di Tempat (COD)</option>
-                  <option value="E-Wallet">E-Wallet (OVO, DANA, dll)</option>
-                </select>
-
-                <button className="btn-confirm" onClick={handleConfirm}>
-                  Konfirmasi & Bayar
-                </button>
-              </div>
-            )}
+            <button className="btn-checkout" onClick={handleCheckout}>
+              Checkout Sekarang
+            </button>
           </div>
         </>
       )}

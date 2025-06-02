@@ -50,7 +50,6 @@ NIM: 122140118
 ### 🛒 Admin
 - Login sebagai admin
 - CRUD produk fashion (tambah, ubah, hapus, lihat)
-- Manajemen stok produk
 
 ### 🎨 Desain
 - UI responsif dan modern menggunakan Tailwind CSS

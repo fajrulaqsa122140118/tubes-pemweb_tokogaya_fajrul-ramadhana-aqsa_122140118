@@ -19,11 +19,10 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Fungsi menambahkan produk ke keranjang
+  // Tambahkan produk ke keranjang
   const addToCart = (product) => {
     const existing = cart.find((item) => item.id === product.id);
     if (existing) {
-      // Produk sudah ada → tambahkan quantity
       const updatedCart = cart.map((item) =>
         item.id === product.id
           ? { ...item, quantity: item.quantity + 1 }
@@ -31,22 +30,48 @@ export const CartProvider = ({ children }) => {
       );
       setCart(updatedCart);
     } else {
-      // Produk baru → masukkan ke cart
       setCart([...cart, { ...product, quantity: 1 }]);
     }
   };
 
-  // Fungsi menghapus produk dari keranjang
+  // Hapus produk dari keranjang
   const removeFromCart = (id) => {
     setCart(cart.filter((item) => item.id !== id));
   };
 
+  // Tambah jumlah item
+  const increaseQuantity = (id) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  // Kurangi jumlah item (minimal 1)
+  const decreaseQuantity = (id) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
+          : item
+      )
+    );
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        increaseQuantity,
+        decreaseQuantity,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
 };
 
-// Custom hook untuk menggunakan Cart
 export const useCart = () => useContext(CartContext);

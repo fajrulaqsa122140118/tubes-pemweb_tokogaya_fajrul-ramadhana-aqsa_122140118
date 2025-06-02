@@ -1,29 +1,38 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Profile.css"; // tambahkan CSS ini
+import "./Profile.css";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
+    username: "",
+    address: "Jl. Dummy Street No. 1",
   });
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (!userData) {
-      navigate("/login");
-    } else {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
-      setFormData({
-        name: parsedUser.name || "",
-        address: parsedUser.address || "",
+    const localUser = localStorage.getItem("user");
+    if (!localUser) return navigate("/login");
+    const parsedUser = JSON.parse(localUser);
+
+    fetch(`http://127.0.0.1:6543/api/profile?user_id=${parsedUser.id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Gagal ambil data profil");
+        return res.json();
+      })
+      .then((data) => {
+        setUser({ ...data, joined: parsedUser.joined });
+        setFormData({
+          username: data.username,
+          address: "Jl. Dummy Street No. 1"
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Gagal memuat data profil.");
+        navigate("/login");
       });
-    }
   }, [navigate]);
 
   const handleLogout = () => {
@@ -41,7 +50,7 @@ const Profile = () => {
   };
 
   const handleSave = () => {
-    if (!user.email.includes('@gmail.com')) {
+    if (!user.email.includes("@gmail.com")) {
       alert("Email harus menggunakan @gmail.com");
       return;
     }
@@ -61,12 +70,12 @@ const Profile = () => {
         <p><strong>Nama:</strong> {isEditing ? (
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="username"
+            value={formData.username}
             onChange={handleInputChange}
           />
         ) : (
-          <span> {user.name}</span>
+          <span> {user.username}</span>
         )}</p>
 
         <p><strong>Email:</strong> {user.email}</p>
@@ -79,10 +88,10 @@ const Profile = () => {
             onChange={handleInputChange}
           />
         ) : (
-          <span> {user.address}</span>
+          <span> {formData.address}</span>
         )}</p>
 
-        <p><strong>Bergabung Sejak:</strong> {user.joined}</p>
+        <p><strong>Bergabung Sejak:</strong> 24 Mei 2025</p>
       </div>
 
       <div className="profile-actions">

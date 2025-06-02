@@ -1,60 +1,61 @@
+/* === HEADER UTAMA === */
 .header {
-  background-color: #452B1E;
-  padding: 10px 0;
+  width: 100%;
+  background-color: #e59647;
+  padding: 16px 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
+/* === NAV CONTAINER === */
 .nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  gap: 30px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.nav-link {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.nav-link.active {
-  text-decoration: underline;
-}
-.header {
-  background-color: #4b2e2e;
-  padding: 16px;
-  color: white;
-}
-
-.nav-container {
+/* === LOGO BRAND === */
+.brand {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
+  align-items: center;
+  font-size: 1.75rem;
   font-weight: bold;
-  position: relative;
+  text-decoration: none;
+  color: #8B4513;
 }
 
-.nav-link:hover {
-  text-decoration: underline;
+.brand-name {
+  font-family: 'Playfair Display', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 0.5px;
+  margin-left: 0.5rem;
+  color: #8B4513;
+}
+
+/* === NAVIGATION LINKS === */
+.nav-links {
+  display: flex;
+  gap: 1rem;
 }
 
 .nav-link {
   text-decoration: none;
-  color: white;
-  padding: 6px 12px;
   font-weight: 500;
-  transition: 0.3s;
+  color: #5a3825;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  padding: 6px 12px;
 }
 
 .nav-link:hover {
+  color: #a0522d;
   text-decoration: underline;
 }
 
 .nav-link.active {
-  text-decoration: underline;
   font-weight: bold;
+  text-decoration: underline;
 }

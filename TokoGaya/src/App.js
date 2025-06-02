@@ -10,7 +10,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import FilterPage from './pages/FilterPage';
 import Cart from "./pages/Cart";
 import RegisterPage from './pages/RegisterPage';
-
+import ThankYou from './pages/thankyou';
 
 
 function App() {
@@ -37,6 +37,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/thankyou" element={<ThankYou />} />
+        {/* Redirect ke halaman utama jika user sudah login */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

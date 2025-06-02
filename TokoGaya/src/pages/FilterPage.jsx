@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './FilterPage.css';
-import { useCart } from '../context/CartContext';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./FilterPage.css";
+import { Link } from 'react-router-dom';
+import { useCart } from "../context/CartContext";
 
 export default function FilterPage() {
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({
-    category: '',
-    minPrice: '',
-    maxPrice: ''
+    category: "",
+    minPrice: "",
+    maxPrice: "",
   });
 
   const { addToCart } = useCart(); // ✅ akses keranjang
 
   useEffect(() => {
-    axios.get('https://fakestoreapi.com/products')
-      .then(res => setProducts(res.data))
-      .catch(err => console.error(err));
+    axios
+      .get("https://fakestoreapi.com/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error(err));
   }, []);
 
   const handleChange = (e) => {
     setFilters({
       ...filters,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -37,7 +39,7 @@ export default function FilterPage() {
     const max = isNaN(maxInput) || maxInput < 100 ? Infinity : maxInput * 1000;
 
     const matchCategory =
-      filters.category === '' || product.category === filters.category;
+      filters.category === "" || product.category === filters.category;
     const matchMin = priceIDR >= min;
     const matchMax = priceIDR <= max;
 
@@ -73,6 +75,20 @@ export default function FilterPage() {
         />
       </div>
 
+      <div className="promo-message-box">
+        <h3 className="promo-message-title">💡 Hemat Lebih Banyak!</h3>
+        <p className="promo-message-text">
+          Temukan produk pilihan dengan harga spesial di halaman{" "}
+          <strong>Produk Promo</strong>.<br />
+          Dapatkan diskon hingga 50% untuk fashion, aksesori, dan elektronik!
+          <br />
+          Belanja cerdas, belanja hemat — hanya di <strong>TokoGaya</strong>.
+        </p>
+        <Link to="/promo">
+          <button className="promo-button">Lihat Promo Sekarang</button>
+        </Link>
+      </div>
+
       <div className="product-grid">
         {filteredProducts.map((product) => {
           const priceIDR = product.price * 16000;
@@ -84,11 +100,10 @@ export default function FilterPage() {
               </div>
               <h3>{product.title}</h3>
               <span className="product-category">{product.category}</span>
-              <p className="product-price">Rp {priceIDR.toLocaleString('id-ID')}</p>
-              <button
-                className="btn-cart"
-                onClick={() => addToCart(product)}
-              >
+              <p className="product-price">
+                Rp {priceIDR.toLocaleString("id-ID")}
+              </p>
+              <button className="btn-cart" onClick={() => addToCart(product)}>
                 Beli
               </button>
             </div>

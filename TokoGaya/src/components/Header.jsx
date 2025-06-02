@@ -1,21 +1,30 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import './Header.css';
-import { useCart } from '../context/CartContext';
+import { useCart } from "../context/CartContext";
+
 
 const Header = () => {
   const { cart } = useCart();
 
   return (
-    <header className="header bg-brown-900 text-white shadow-md">
-      <nav className="nav-container flex gap-4 items-center justify-center py-3">
-        <NavLink to="/" className="nav-link">Home</NavLink>
-        <NavLink to="/promo" className="nav-link">Produk Promo</NavLink>
-        <NavLink to="/filter" className="nav-link">Filter</NavLink>
-        <NavLink to="/profile" className="nav-link">Profile</NavLink>
-        <NavLink to="/cart" className="nav-link">Keranjang ({cart.length})</NavLink>
+    <header className="header">
+      <div className="nav-container">
+        {/* Judul toko */}
+        <Link to="/" className="brand">
+          🛍️ <span className="brand-name">Toko Gaya</span>
+        </Link>
 
-      </nav>
+        <nav className="nav-links">
+          <NavLink to="/" className="nav-link">Home</NavLink>
+          <NavLink to="/filter" className="nav-link">Filter</NavLink>
+          <NavLink to="/promo" className="nav-link">Berbelanja</NavLink>
+          <NavLink to="/profile" className="nav-link">Profile</NavLink>
+          <NavLink to="/cart" className="nav-link">
+            ({cart.length}) Cart 
+          </NavLink>
+        </nav>
+      </div>
     </header>
   );
 };
